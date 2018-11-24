@@ -2,6 +2,7 @@ import weka.classifiers.Evaluation;
 import weka.core.Instances;
 import weka.classifiers.functions.MultilayerPerceptron;
 import weka.core.converters.ConverterUtils.DataSource;
+import java.util.Random;
 
 // sudo javac -cp '.:weka.jar' Hola.java
 // sudo java -cp '.:weka.jar' Hola
@@ -19,11 +20,18 @@ public class Hola{
       net.buildClassifier(data);
 
       Evaluation eval = new Evaluation(data);
-      eval.evaluateModel(net, data);
 
+      //eval.evaluateModel(net, data);
+
+      eval.crossValidateModel(net, data, 10, new Random());
+
+      double errorz = eval.errorRate();
+
+      System.out.println(net.getValidationSetSize());
+      System.out.println(errorz);
       System.out.println(eval.toSummaryString());
-      System.out.println(eval.toMatrixString());
-      System.out.println(net.toString());
+      //System.out.println(eval.toMatrixString());
+      //System.out.println(net.toString());
 
     }catch(Exception e){
       System.out.println(e);
