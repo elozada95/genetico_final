@@ -1,0 +1,5 @@
+#capas_ocultas 1 [1-3]
+#neuronas_capa a=13 [6-20]
+#epocas 500 [250-750]
+learning_rate 0.3 [0.2-0.5]
+momentum 0.2 [0.1-0.3]
