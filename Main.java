@@ -14,11 +14,11 @@ import java.util.concurrent.TimeUnit;
 
 public class Main{
 
-  public static final int populationSize = 20;
+  public static final int populationSize = 10;
 
-  public static final int generations = 30;
+  public static final int generations = 15;
 
-  public static final int mutationRate = 5; //[0% - 100%]
+  public static final int mutationRate = 7; //[0% - 100%]
 
   public static final int folds = 5;
   
@@ -104,9 +104,18 @@ public class Main{
 
   public static Child mate(Child father, Child mother){
     String hiddenLayers = father.getH();
-    int epochs = father.getN();
-    double learningRate = mother.getL();
     double momentum = mother.getM();
+    int epochs;
+    double learningRate;
+    
+    if(probabilityRoll(50)){
+      epochs = father.getN();
+      learningRate = mother.getL();
+    }
+    else{
+      epochs = mother.getN();
+      learningRate = father.getL();
+    }
 
     if(probabilityRoll(mutationRate)){
       int gene = randomInt(0, 3);
