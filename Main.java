@@ -14,16 +14,16 @@ import java.util.concurrent.TimeUnit;
 
 public class Main{
 
-  public static final int populationSize = 4;
+  public static final int populationSize = 20;
 
-  public static final int generations = 3;
+  public static final int generations = 30;
 
-  public static final int mutationRate = 3; //[0% - 100%]
+  public static final int mutationRate = 5; //[0% - 100%]
 
   public static final int folds = 5;
   
   public static final int minLayers = 1;
-  public static final int maxLayers = 3;
+  public static final int maxLayers = 2;
   
   public static final int minNeurons = 10;
   public static final int maxNeurons = 16;
@@ -61,7 +61,6 @@ public class Main{
       if(i > 0){
         matingProbability[i] += matingProbability[i-1];
       }
-      System.out.println(matingProbability[i]);
     }
   }
 
@@ -104,34 +103,29 @@ public class Main{
   }
 
   public static Child mate(Child father, Child mother){
-    String hiddenLayers;
-    int epochs;
-    double learningRate;
-    double momentum;
+    String hiddenLayers = father.getH();
+    int epochs = father.getN();
+    double learningRate = mother.getL();
+    double momentum = mother.getM();
 
     if(probabilityRoll(mutationRate)){
-      hiddenLayers = buildHiddenLayers(randomInt(minLayers, maxLayers));
-    }
-    else{
-      hiddenLayers = father.getH();
-    }
-    if(probabilityRoll(mutationRate)){
-      epochs = randomInt(minEpochs, maxEpochs);
-    }
-    else{
-      epochs = father.getN();
-    }
-    if(probabilityRoll(mutationRate)){
-      learningRate = randomDouble(minLearningRate, maxLearningRate);
-    }
-    else{
-      learningRate = mother.getL();
-    }
-    if(probabilityRoll(mutationRate)){
-      momentum = randomDouble(minMomentum, maxMomentum);
-    }
-    else{
-      momentum = mother.getM();
+      int gene = randomInt(0, 3);
+      switch(gene){
+        case 0:
+          hiddenLayers = buildHiddenLayers(randomInt(minLayers, maxLayers));
+          break;
+        case 1:
+          epochs = randomInt(minEpochs, maxEpochs);
+          break;
+        case 2:
+          learningRate = randomDouble(minLearningRate, maxLearningRate);
+          break;
+        case 3:
+          momentum = randomDouble(minMomentum, maxMomentum);
+          break;
+        default:
+          break;
+      }
     }
 
     return(new Child(data, folds, evalRandom, hiddenLayers, epochs, learningRate, momentum));
@@ -158,16 +152,30 @@ public class Main{
   public static ArrayList<Child> nextGen(ArrayList<Child> curGen){
     ArrayList<Child> children = new ArrayList<Child>();
     HashSet<ArrayList<Integer>> pairings = new HashSet<ArrayList<Integer>>();
-    while(pairings.size() < populationSize){
+    while(pairings.size() < populationSize - 1){
       ArrayList<Integer> pair = new ArrayList<Integer>();
-      pair.add(getMate());
-      pair.add(getMate());
+      int a = getMate();
+      int a2 = getMate();
+
+      if(a2 < a){
+        a = a2;
+      }
+      int b;
+      do{
+        b = getMate();
+        int b2 = getMate();
+        if(b2 < b){
+          b = b2;
+        }
+      }while(a == b);
+      pair.add(a);
+      pair.add(b);
       if(!pairings.contains(pair)){
         pairings.add(pair);
       }
     }
+    insertionSort(children, curGen.get(0));
     for (ArrayList<Integer> p : pairings) {
-      System.out.println("Son of: " + p.get(0) + " and " + p.get(1));
       insertionSort(children, mate(curGen.get(p.get(0)), curGen.get(p.get(1))));
     }
     return children;
@@ -178,28 +186,50 @@ public class Main{
     return children; 
   }
 
+  public static void printGenerationSummary(ArrayList<Child> gen, int genNum){
+    double avgError = 0;
+    for(Child curChild : gen){
+      avgError += curChild.getErrorRt();
+    }
+    avgError /= gen.size();
+
+    double bestErrorRt = gen.get(0).getErrorRt();
+
+    System.out.println();
+    System.out.println("Generation " + genNum);
+    System.out.println("Generation's average accuracy: " + ((1.0 - avgError)*100.0) + "%");
+    System.out.println("Best candidate's accuracy: " + ((1.0 - bestErrorRt)*100.0) + "%");
+    System.out.println();
+  }
+
+  public static void printChild(Child curChild){
+    System.out.println("Hidden layers: " + curChild.getH());
+    System.out.println("Epochs: " + curChild.getN());
+    System.out.println("Learning rate: " + curChild.getL());
+    System.out.println("Momentum: " + curChild.getM());
+    System.out.println();
+    System.out.println(curChild.getSummary());
+    System.out.println(curChild.getMatrix());
+  }
+
   public static void main(String []args){
     long startTime = System.nanoTime();
     getMatingProbability();
     ArrayList<Child> prevGeneration = new ArrayList<Child>();
     ArrayList<Child> curGeneration = new ArrayList<Child>();
     try{
-      DataSource source = new DataSource("./out.csv");
+      DataSource source = new DataSource("./input.csv");
       data = source.getDataSet();
       data.setClassIndex(data.numAttributes() - 1);
       curGeneration = firstGen();
-      for(int i = 0; i < curGeneration.size(); i++){
-        System.out.println("Error rate: "+curGeneration.get(i).getErrorRt());
-      }
-      System.out.println();
+      printGenerationSummary(curGeneration, 1);
       for(int i = 1; i < generations; i++){
         prevGeneration = new ArrayList<Child>(curGeneration);
         curGeneration = nextGen(prevGeneration);
-        for(int j = 0; j < curGeneration.size(); j++){
-          System.out.println("Error rate: "+curGeneration.get(j).getErrorRt());
-        }
-        System.out.println();
+        printGenerationSummary(curGeneration, i+1);
       }
+      System.out.println("Best candidate found:");
+      printChild(curGeneration.get(0));
     }catch(Exception e){
       System.out.println(e);
       return;
@@ -207,6 +237,6 @@ public class Main{
 
     long endTime   = System.nanoTime();
     long totalTime = endTime - startTime;
-    System.out.println("Segundos transcurridos: " + TimeUnit.NANOSECONDS.toSeconds(totalTime));
+    System.out.println("Seconds elapsed: " + TimeUnit.NANOSECONDS.toSeconds(totalTime));
   }
 }

@@ -10,6 +10,7 @@ public class Child{
     
     double errorRt;
     String summary;
+    String confusionMatrix;
 
 
     public Child(Instances data, int folds, Random evalRandom, String hiddenLayers, int epochs, double learningRate, double momentum){
@@ -28,6 +29,7 @@ public class Child{
 
             errorRt = eval.errorRate();
             summary = eval.toSummaryString();
+            confusionMatrix = eval.toMatrixString();
         }catch(Exception e){
             System.out.println(e);
             return;
@@ -57,5 +59,9 @@ public class Child{
 
     public String getSummary(){
         return summary;
+    }
+
+    public String getMatrix(){
+        return confusionMatrix;
     }
 }
