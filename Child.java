@@ -5,12 +5,21 @@ import weka.core.converters.ConverterUtils.DataSource;
 import java.util.Random;
 
 public class Child{
+    
+    MultilayerPerceptron netwk = new MultilayerPerceptron();
+    
     double errorRt;
     String summary;
 
-    public Child(Instances data, int folds, Random evalRandom){
+
+    public Child(Instances data, int folds, Random evalRandom, String hiddenLayers, int epochs, double learningRate, double momentum){
+        
+        netwk.setHiddenLayers(hiddenLayers);
+        netwk.setTrainingTime(epochs);
+        netwk.setLearningRate(learningRate);
+        netwk.setMomentum(momentum);
+            
         try{
-            MultilayerPerceptron netwk = new MultilayerPerceptron();
             netwk.buildClassifier(data);
 
             Evaluation eval = new Evaluation(data);
@@ -24,6 +33,22 @@ public class Child{
             return;
         }
         
+    }
+
+    public String getH(){
+        return netwk.getHiddenLayers();
+    }
+
+    public int getN(){
+        return netwk.getTrainingTime();
+    }
+
+    public double getL(){
+        return netwk.getLearningRate();
+    }
+
+    public double getM(){
+        return netwk.getMomentum();
     }
 
     public double getErrorRt(){
