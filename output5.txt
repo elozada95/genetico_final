@@ -1,0 +1,99 @@
+
+Generation 1
+Generation's average accuracy: 89.29090909090908%
+Best candidate's accuracy: 90.72727272727272%
+
+
+Generation 2
+Generation's average accuracy: 89.89090909090909%
+Best candidate's accuracy: 91.27272727272727%
+
+
+Generation 3
+Generation's average accuracy: 89.60000000000001%
+Best candidate's accuracy: 91.27272727272727%
+
+
+Generation 4
+Generation's average accuracy: 90.38181818181819%
+Best candidate's accuracy: 92.0%
+
+
+Generation 5
+Generation's average accuracy: 90.47272727272727%
+Best candidate's accuracy: 92.0%
+
+
+Generation 6
+Generation's average accuracy: 90.38181818181819%
+Best candidate's accuracy: 92.0%
+
+
+Generation 7
+Generation's average accuracy: 89.94545454545455%
+Best candidate's accuracy: 92.0%
+
+
+Generation 8
+Generation's average accuracy: 90.87272727272727%
+Best candidate's accuracy: 92.0%
+
+
+Generation 9
+Generation's average accuracy: 90.21818181818182%
+Best candidate's accuracy: 92.0%
+
+
+Generation 10
+Generation's average accuracy: 89.8%
+Best candidate's accuracy: 92.0%
+
+
+Generation 11
+Generation's average accuracy: 89.81818181818181%
+Best candidate's accuracy: 92.36363636363636%
+
+
+Generation 12
+Generation's average accuracy: 90.63636363636364%
+Best candidate's accuracy: 92.36363636363636%
+
+
+Generation 13
+Generation's average accuracy: 90.4%
+Best candidate's accuracy: 92.36363636363636%
+
+
+Generation 14
+Generation's average accuracy: 90.32727272727273%
+Best candidate's accuracy: 92.36363636363636%
+
+
+Generation 15
+Generation's average accuracy: 90.43636363636364%
+Best candidate's accuracy: 92.36363636363636%
+
+Best candidate found:
+Hidden layers: 15
+Epochs: 598
+Learning rate: 0.20492778809037737
+Momentum: 0.10853292181488211
+
+
+Correctly Classified Instances         508               92.3636 %
+Incorrectly Classified Instances        42                7.6364 %
+Kappa statistic                          0.8759
+Mean absolute error                      0.0753
+Root mean squared error                  0.207 
+Relative absolute error                 18.2372 %
+Root relative squared error             45.5913 %
+Total Number of Instances              550     
+
+=== Confusion Matrix ===
+
+   a   b   c   <-- classified as
+  66  14   7 |   a =  smoke
+  11 236   2 |   b =  fire
+   4   4 206 |   c =  not_fire
+
+Seconds elapsed: 1329
